@@ -137,10 +137,10 @@ if (interaction.customId === "ticket") {
                     .setStyle(ButtonStyle.Danger)
             );
 
-        const ticketEmbed = new EmbedBuilder()
-            .setTitle("🎫 Ticket Creado")
-            .setDescription(`
-Hola ${interaction.user}
+const embed = new EmbedBuilder()
+.setTitle("🎫 Sistema de Tickets")
+.setDescription("Haz clic en el botón para abrir un ticket.")
+.setImage("https://i.imgur.com/4myqfzJ.jpeg");
 
 📌 Explica tu problema
 ⏳ Un staff responderá pronto
