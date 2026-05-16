@@ -44,8 +44,7 @@ client.on("guildMemberAdd", member => {
 
 });
 
-
-// PANEL
+// PANEL DE TICKETS
 client.on("messageCreate", async message => {
 
     if (message.author.bot) return;
@@ -79,25 +78,24 @@ client.on("messageCreate", async message => {
 
 });
 
-
 // TICKETS
 client.on("interactionCreate", async interaction => {
 
     if (!interaction.isButton()) return;
 
-    // CREAR
-if (interaction.customId === "ticket") {
+    // CREAR TICKET
+    if (interaction.customId === "ticket") {
 
-    const ticketExistente = interaction.guild.channels.cache.find(
-        canal => canal.name === `ticket-${interaction.user.username}`
-    );
+        const ticketExistente = interaction.guild.channels.cache.find(
+            canal => canal.name === `ticket-${interaction.user.username}`
+        );
 
-    if (ticketExistente) {
-        return interaction.reply({
-            content: `❌ Ya tienes un ticket abierto: ${ticketExistente}`,
-            ephemeral: true
-        });
-    }
+        if (ticketExistente) {
+            return interaction.reply({
+                content: `❌ Ya tienes un ticket abierto: ${ticketExistente}`,
+                ephemeral: true
+            });
+        }
 
         const staffRole = interaction.guild.roles.cache.find(
             role => role.name === "Staff"
@@ -137,15 +135,14 @@ if (interaction.customId === "ticket") {
                     .setStyle(ButtonStyle.Danger)
             );
 
-const embed = new EmbedBuilder()
-.setTitle("🎫 Sistema de Tickets")
-.setDescription("Haz clic en el botón para abrir un ticket.")
-.setImage("https://i.imgur.com/4myqfzJ.jpeg");
-
+        const ticketEmbed = new EmbedBuilder()
+            .setTitle("🎫 Sistema de Tickets")
+            .setDescription(`
 📌 Explica tu problema
 ⏳ Un staff responderá pronto
 `)
             .setColor("Green")
+            .setImage("https://i.imgur.com/4myqfzJ.jpeg")
             .setThumbnail(interaction.user.displayAvatarURL())
             .setTimestamp();
 
@@ -155,12 +152,12 @@ const embed = new EmbedBuilder()
         });
 
         interaction.reply({
-            content: `Tu ticket fue creado: ${canal}`,
+            content: `✅ Tu ticket fue creado: ${canal}`,
             ephemeral: true
         });
     }
 
-    // CERRAR
+    // CERRAR TICKET
     if (interaction.customId === "cerrar") {
 
         await interaction.reply({
