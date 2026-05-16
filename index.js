@@ -53,7 +53,7 @@ client.on("messageCreate", async message => {
     if (message.content === "!panel") {
 
         const embed = new EmbedBuilder()
-            .setTitle("🎫 MineGhost Suporte")
+            .setTitle("🎫 CydraxMC Soporte")
             .setDescription(`
 📩 Presiona el botón para abrir un ticket
 
