@@ -35,7 +35,7 @@ client.on("guildMemberAdd", member => {
 
     const bienvenida = new EmbedBuilder()
         .setTitle("👋 Bienvenido")
-        .setDescription(`Bienvenido ${member} a **${member.guild.name}**`)
+        .setDescription(`Bienvenido ${member} a **CydraxMC**`)
         .setColor("Purple")
         .setThumbnail(member.user.displayAvatarURL())
         .setTimestamp();
