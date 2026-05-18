@@ -21,6 +21,11 @@ try {
 
 const channel = await client.channels.fetch(process.env.CHANNEL_ID);
 
+if (!channel) {
+console.log("❌ Canal no encontrado");
+return;
+}
+
 const panel = new EmbedBuilder()
 .setColor("#22c55e")
 .setTitle("🎫 ¿NECESITAS AYUDA?")
@@ -31,7 +36,10 @@ Selecciona una categoría para recibir soporte del equipo de **CydraxMC**
 • No menciones al Staff innecesariamente
 • No crees tickets falsos
 • Explica tu problema claramente
-`);
+`)
+.setFooter({
+text: "CydraxMC Support System"
+});
 
 const menu = new ActionRowBuilder()
 .addComponents(
@@ -47,31 +55,31 @@ value: "soporte"
 },
 {
 label: "Reporta a un jugador",
-description: "Reporta jugadores que incumplen reglas",
+description: "Reporta jugadores",
 emoji: "📜",
 value: "reporte"
 },
 {
 label: "Reporte de un bug",
-description: "Reporta errores del servidor",
+description: "Reporta errores",
 emoji: "⚠️",
 value: "bug"
 },
 {
 label: "Sanciones & Anticheat",
-description: "Apela sanciones aquí",
+description: "Apela sanciones",
 emoji: "💻",
 value: "sanciones"
 },
 {
 label: "Pagos tienda",
-description: "Problemas con compras o pagos",
+description: "Problemas con pagos",
 emoji: "💰",
 value: "tienda"
 },
 {
 label: "Solicitar revive",
-description: "Solicita revisión de objetos perdidos",
+description: "Revisión de objetos",
 emoji: "💀",
 value: "revive"
 }
@@ -85,10 +93,13 @@ components: [menu]
 
 console.log("✅ Panel enviado");
 
-} catch(err) {
-console.log("❌ Error:", err);
+} catch(error) {
+console.log("❌ Error:", error);
 }
 
+});
+
+client.login(process.env.TOKEN);
 });
 
 client.login(process.env.TOKEN);
