@@ -67,7 +67,7 @@ const panel = new EmbedBuilder()
 .setColor("#22c55e")
 .setTitle("🎫 ¿NECESITAS AYUDA?")
 .setDescription(`
-Selecciona una categoría para recibir soporte.
+¡Hola! Este es el panel de tickets. Donde nuestro equipo de Staff y Administración atiende soporte a los usuarios. Si necesitas soporte crea ticket según tus necesidades en las siguientes categorías.
 
 ⚠️ RECUERDA
 
