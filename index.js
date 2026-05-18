@@ -42,7 +42,7 @@ const bienvenida = new EmbedBuilder()
 Bienvenido/a ${member} a **CydraxMC**
 
 📜 Lee las reglas
-🎫 Usa \`!tickets\` si necesitas ayuda
+🎫 Ve a \`Tickets\` si necesitas ayuda
 💬 Disfruta de la comunidad
 
 👥 Miembro número:
