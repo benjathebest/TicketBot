@@ -5,7 +5,9 @@ Client,
 GatewayIntentBits,
 EmbedBuilder,
 ActionRowBuilder,
-StringSelectMenuBuilder
+StringSelectMenuBuilder,
+PermissionFlagsBits,
+ChannelType
 } = require("discord.js");
 
 const client = new Client({
@@ -31,11 +33,6 @@ const panel = new EmbedBuilder()
 .setTitle("🎫 ¿NECESITAS AYUDA?")
 .setDescription(`
 Selecciona una categoría para recibir soporte del equipo de **CydraxMC**
-
-⚠️ RECUERDA
-• No menciones al Staff innecesariamente
-• No crees tickets falsos
-• Explica tu problema claramente
 `);
 
 const menu = new ActionRowBuilder()
@@ -46,38 +43,38 @@ new StringSelectMenuBuilder()
 .addOptions([
 {
 label: "Soporte Técnico",
-description: "Resolvemos tus dudas",
 emoji: "🔧",
+description: "Resolvemos tus dudas",
 value: "soporte"
 },
 {
 label: "Reporta a un jugador",
-description: "Reportar jugadores",
 emoji: "📜",
+description: "Reporta jugadores",
 value: "reporte"
 },
 {
 label: "Reporte de Bug",
-description: "Reportar errores",
 emoji: "⚠️",
+description: "Reporta errores",
 value: "bug"
 },
 {
 label: "Sanciones & Anticheat",
-description: "Apela sanciones",
 emoji: "💻",
+description: "Apela sanciones",
 value: "sanciones"
 },
 {
 label: "Pagos Tienda",
-description: "Problemas con pagos",
 emoji: "💰",
+description: "Problemas con pagos",
 value: "tienda"
 },
 {
 label: "Solicitar Revive",
-description: "Recuperar objetos",
 emoji: "💀",
+description: "Recuperar objetos",
 value: "revive"
 }
 ])
@@ -89,6 +86,46 @@ components: [menu]
 });
 
 }
+
+});
+
+client.on("interactionCreate", async (interaction) => {
+
+if (!interaction.isStringSelectMenu()) return;
+if (interaction.customId !== "tickets") return;
+
+const categoria = interaction.values[0];
+
+const canal = await interaction.guild.channels.create({
+name: `ticket-${categoria}`,
+type: ChannelType.GuildText,
+permissionOverwrites: [
+{
+id: interaction.guild.id,
+deny: [PermissionFlagsBits.ViewChannel]
+},
+{
+id: interaction.user.id,
+allow: [
+PermissionFlagsBits.ViewChannel,
+PermissionFlagsBits.SendMessages,
+PermissionFlagsBits.ReadMessageHistory
+]
+}
+]
+});
+
+await canal.send(`
+🎫 Hola ${interaction.user}
+
+Tu ticket fue creado correctamente.
+Un miembro del staff te responderá pronto.
+`);
+
+await interaction.reply({
+content: `✅ Tu ticket fue creado: ${canal}`,
+ephemeral: true
+});
 
 });
 
