@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const {
 Client,
 GatewayIntentBits,
@@ -7,13 +9,17 @@ StringSelectMenuBuilder
 } = require("discord.js");
 
 const client = new Client({
-intents: [GatewayIntentBits.Guilds]
+intents: [
+GatewayIntentBits.Guilds
+]
 });
 
 client.once("ready", async () => {
-console.log(`${client.user.tag} conectado`);
+console.log(`✅ ${client.user.tag} conectado`);
 
-const channel = await client.channels.fetch("1465171315156844574");
+try {
+
+const channel = await client.channels.fetch(process.env.CHANNEL_ID);
 
 const panel = new EmbedBuilder()
 .setColor("#22c55e")
@@ -21,7 +27,7 @@ const panel = new EmbedBuilder()
 .setDescription(`
 Selecciona una categoría para recibir soporte del equipo de **CydraxMC**
 
-⚠️ **Recuerda**
+⚠️ **RECUERDA**
 • No menciones al Staff innecesariamente
 • No crees tickets falsos
 • Explica tu problema claramente
@@ -35,31 +41,31 @@ new StringSelectMenuBuilder()
 .addOptions([
 {
 label: "Soporte Técnico",
-description: "En esta categoría responderemos tus dudas",
+description: "Resolvemos tus dudas y preguntas",
 emoji: "🔧",
 value: "soporte"
 },
 {
 label: "Reporta a un jugador",
-description: "En esta categoría podrás reportar un jugador",
+description: "Reporta jugadores que incumplen reglas",
 emoji: "📜",
 value: "reporte"
 },
 {
 label: "Reporte de un bug",
-description: "Reporta cualquier bug del servidor",
+description: "Reporta errores del servidor",
 emoji: "⚠️",
 value: "bug"
 },
 {
 label: "Sanciones & Anticheat",
-description: "Podrás apelar tu sanción aquí",
+description: "Apela sanciones aquí",
 emoji: "💻",
-value: "sancion"
+value: "sanciones"
 },
 {
 label: "Pagos tienda",
-description: "Si tienes un problema con la tienda",
+description: "Problemas con compras o pagos",
 emoji: "💰",
 value: "tienda"
 },
@@ -77,6 +83,12 @@ embeds: [panel],
 components: [menu]
 });
 
+console.log("✅ Panel enviado");
+
+} catch(err) {
+console.log("❌ Error:", err);
+}
+
 });
 
-client.login("MTUwNTI0NTk4NjU4MTEyMzI5NA.GQUKBD.IXT6J6Yn9WyVkNgnSHXpZvw4cIyYQdeWYRHWH4");
+client.login(process.env.TOKEN);
