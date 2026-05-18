@@ -5,18 +5,47 @@ const {
     GatewayIntentBits,
     EmbedBuilder,
     ActionRowBuilder,
-    StringSelectMenuBuilder
+    StringSelectMenuBuilder,
+    SlashCommandBuilder,
+    REST,
+    Routes,
+    Events
 } = require("discord.js");
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds]
 });
 
+// Registrar comando /tickets
+const commands = [
+    new SlashCommandBuilder()
+        .setName("tickets")
+        .setDescription("Enviar panel de tickets")
+        .toJSON()
+];
+
+const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
+
 client.once("ready", async () => {
     console.log(`✅ ${client.user.tag} conectado`);
 
     try {
-        const channel = await client.channels.fetch(process.env.CHANNEL_ID);
+        await rest.put(
+            Routes.applicationCommands(client.user.id),
+            { body: commands }
+        );
+
+        console.log("✅ Comando /tickets registrado");
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+client.on(Events.InteractionCreate, async (interaction) => {
+
+    if (!interaction.isChatInputCommand()) return;
+
+    if (interaction.commandName === "tickets") {
 
         const panel = new EmbedBuilder()
             .setColor("#22c55e")
@@ -24,14 +53,11 @@ client.once("ready", async () => {
             .setDescription(`
 Selecciona una categoría para recibir soporte del equipo de **CydraxMC**
 
-⚠️ **RECUERDA**
+⚠️ RECUERDA
 • No menciones al Staff innecesariamente
 • No crees tickets falsos
 • Explica tu problema claramente
-            `)
-            .setFooter({
-                text: "CydraxMC Support System"
-            });
+`);
 
         const menu = new ActionRowBuilder()
             .addComponents(
@@ -47,46 +73,23 @@ Selecciona una categoría para recibir soporte del equipo de **CydraxMC**
                         },
                         {
                             label: "Reporta a un jugador",
-                            description: "Reporta jugadores",
+                            description: "Reportar jugadores",
                             emoji: "📜",
                             value: "reporte"
                         },
                         {
-                            label: "Reporte de un bug",
-                            description: "Reporta errores",
+                            label: "Reporte de Bug",
+                            description: "Reportar errores",
                             emoji: "⚠️",
                             value: "bug"
-                        },
-                        {
-                            label: "Sanciones & Anticheat",
-                            description: "Apela sanciones",
-                            emoji: "💻",
-                            value: "sanciones"
-                        },
-                        {
-                            label: "Pagos tienda",
-                            description: "Problemas con pagos",
-                            emoji: "💰",
-                            value: "tienda"
-                        },
-                        {
-                            label: "Solicitar revive",
-                            description: "Recuperar objetos",
-                            emoji: "💀",
-                            value: "revive"
                         }
                     ])
             );
 
-        await channel.send({
+        await interaction.reply({
             embeds: [panel],
             components: [menu]
         });
-
-        console.log("✅ Panel enviado");
-
-    } catch (err) {
-        console.log("❌ Error:", err);
     }
 });
 
