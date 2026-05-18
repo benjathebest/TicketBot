@@ -14,7 +14,8 @@ const client = new Client({
 intents: [
 GatewayIntentBits.Guilds,
 GatewayIntentBits.GuildMessages,
-GatewayIntentBits.MessageContent
+GatewayIntentBits.MessageContent,
+GatewayIntentBits.GuildMembers
 ]
 });
 
@@ -22,6 +23,27 @@ client.once("ready", () => {
 console.log(`✅ ${client.user.tag} conectado`);
 });
 
+
+// BIENVENIDAS
+client.on("guildMemberAdd", async (member) => {
+
+const canal = member.guild.channels.cache.get(process.env.WELCOME_CHANNEL);
+
+if (!canal) return;
+
+canal.send(`
+🎉 ¡Bienvenido/a ${member} a **CydraxMC**!
+
+📜 Lee las reglas
+🎫 Usa \`!tickets\` si necesitas ayuda
+💬 Disfruta de la comunidad
+
+👥 Miembro número: ${member.guild.memberCount}
+`);
+});
+
+
+// COMANDO !tickets
 client.on("messageCreate", async (message) => {
 
 if (message.author.bot) return;
@@ -32,7 +54,7 @@ const panel = new EmbedBuilder()
 .setColor("#22c55e")
 .setTitle("🎫 ¿NECESITAS AYUDA?")
 .setDescription(`
-Selecciona una categoría para recibir soporte del equipo de **CydraxMC**
+Selecciona una categoría para recibir soporte.
 `);
 
 const menu = new ActionRowBuilder()
@@ -43,39 +65,21 @@ new StringSelectMenuBuilder()
 .addOptions([
 {
 label: "Soporte Técnico",
+description: "Resolvemos dudas",
 emoji: "🔧",
-description: "Resolvemos tus dudas",
 value: "soporte"
 },
 {
-label: "Reporta a un jugador",
-emoji: "📜",
+label: "Reportar Usuario",
 description: "Reporta jugadores",
+emoji: "📜",
 value: "reporte"
 },
 {
 label: "Reporte de Bug",
-emoji: "⚠️",
 description: "Reporta errores",
+emoji: "⚠️",
 value: "bug"
-},
-{
-label: "Sanciones & Anticheat",
-emoji: "💻",
-description: "Apela sanciones",
-value: "sanciones"
-},
-{
-label: "Pagos Tienda",
-emoji: "💰",
-description: "Problemas con pagos",
-value: "tienda"
-},
-{
-label: "Solicitar Revive",
-emoji: "💀",
-description: "Recuperar objetos",
-value: "revive"
 }
 ])
 );
@@ -86,9 +90,10 @@ components: [menu]
 });
 
 }
-
 });
 
+
+// CREAR TICKET
 client.on("interactionCreate", async (interaction) => {
 
 if (!interaction.isStringSelectMenu()) return;
@@ -97,8 +102,9 @@ if (interaction.customId !== "tickets") return;
 const categoria = interaction.values[0];
 
 const canal = await interaction.guild.channels.create({
-name: `ticket-${categoria}`,
+name: `ticket-${interaction.user.username}`,
 type: ChannelType.GuildText,
+
 permissionOverwrites: [
 {
 id: interaction.guild.id,
@@ -118,12 +124,12 @@ PermissionFlagsBits.ReadMessageHistory
 await canal.send(`
 🎫 Hola ${interaction.user}
 
-Tu ticket fue creado correctamente.
-Un miembro del staff te responderá pronto.
+Tu ticket de **${categoria}** fue creado.
+Un miembro del staff responderá pronto.
 `);
 
 await interaction.reply({
-content: `✅ Tu ticket fue creado: ${canal}`,
+content: `✅ Ticket creado: ${canal}`,
 ephemeral: true
 });
 
